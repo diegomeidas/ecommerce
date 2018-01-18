@@ -11,13 +11,13 @@ class Page{
 
 
     //metodos
-    public function __construct($opts = array()){
+    public function __construct($opts = array(), $tpl_dir = "/views/"){
         //array_merge: caso não venha parametro na chamada do metodo usa $defaults
         $this->options = array_merge($this->defaults, $opts);
 
         $config = array(
             //DOCUMENT_ROOT: pega onde esta o root do projeto
-            "tpl_dir"       => $_SERVER["DOCUMENT_ROOT"] . "/views/",
+            "tpl_dir"       => $_SERVER["DOCUMENT_ROOT"] . $tpl_dir,
             "cache_dir"     => $_SERVER["DOCUMENT_ROOT"] . "/views-cache/",
             "debug"         => false // set to false to improve the speed
         );
