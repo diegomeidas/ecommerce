@@ -7,7 +7,10 @@ class Page{
     //atributos
     private $tpl;
     private $options =  [];
-    private $defaults = ["data"=>[]];
+    private $defaults = [
+        "header"=>true,
+        "footer"=>true,
+        "data"=>[]];
 
 
     //metodos
@@ -17,6 +20,7 @@ class Page{
 
         $config = array(
             //DOCUMENT_ROOT: pega onde esta o root do projeto
+            "base_url"      => null,
             "tpl_dir"       => $_SERVER["DOCUMENT_ROOT"] . $tpl_dir,
             "cache_dir"     => $_SERVER["DOCUMENT_ROOT"] . "/views-cache/",
             "debug"         => false // set to false to improve the speed
@@ -28,10 +32,13 @@ class Page{
         $this->tpl = new Tpl;
 
         //atribuição de variaveis que váo aparecer no template
-        $this->setData($this->options["data"]);
+        if ($this->options['data'])
+            $this->setData($this->options['data']);
 
-        //desenhar o tpl na tela
-        $this->tpl->draw("header");
+        //desenhar o tpl na tela// carrega o HEADER
+        if ($this->options['header'] === true)
+            $this->tpl->draw("header", false);
+
     }
 
     //metodo data
@@ -51,10 +58,12 @@ class Page{
 
     }
 
-
+    //metodo pra carregar o FOOTER
     public function __destruct(){
 
-        $this->tpl->draw("footer");
+    if ($this->options['footer'] === true)
+        $this->tpl->draw("footer", false);
+
 
     }
 }
