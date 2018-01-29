@@ -31,6 +31,8 @@ class Category extends Model {
         ));
 
         $this->setData($results[0]);
+
+        Category::updateFile();
     }
 
     //METODO GET
@@ -56,6 +58,29 @@ class Category extends Model {
         $sql->query("DELETE FROM tb_categories WHERE idcategory = :idcategory", [
             ":idcategory"=>$this->getidcategory()
         ]);
+
+        Category::updateFile();
+    }
+
+    //METODO PARA EDITAR CATEGORIAS SITE
+    public static function updateFile()
+    {
+        //recebe todas as categorias do BD
+        $categories = Category::listAll();
+
+        //cria <li> dinamicamente em categories-menu.html
+        $html = [];
+
+        foreach ($categories as $row){
+            array_push($html, '<li><a href="/categories/'.$row['idcategory'].'">' . $row['descategory'] . '</a></li>');
+        }
+
+        //SALVAR O ARQUIVO
+        //filename: busca a pasta raiz do arquivo
+        //caminho do arquivo: /views/categoris-menu.html
+        //implode: transforma o array ($html) em string
+        file_put_contents($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR . "categories-menu.html", implode('', $html));
+
     }
 
 
