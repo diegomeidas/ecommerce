@@ -18,6 +18,7 @@
         </div>
         <!-- /.box-header -->
         <!-- form start -->
+        <!-- enctype="multipart/form-data"  // para envio de upload-->
         <form role="form" action="/admin/products/<?php echo htmlspecialchars( $product["idproduct"], ENT_COMPAT, 'UTF-8', FALSE ); ?>" method="post" enctype="multipart/form-data">
           <div class="box-body">
             <div class="form-group">

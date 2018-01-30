@@ -3,9 +3,8 @@
 namespace Hcode\Model;
 
 use \Hcode\DB\Sql;
-use \Hcode\Mailer;
 use \Hcode\Model;
-//use \Rain\Tpl\Exception;
+
 
 class Product extends Model {
 
@@ -16,6 +15,19 @@ class Product extends Model {
 
         $sql = new Sql();
         return $sql->select("SELECT * FROM tb_products ORDER BY desproduct");
+    }
+
+    //metodo para tratar as fotos para o checkphoto
+    public static function checkList($list)
+    {
+        //&: modifica a $row e a $list
+        foreach($list as &$row){
+
+            $p = new Product();
+            $p->setData($row);
+            $row = $p->getValues();
+        }
+        return $list;
     }
 
     //METODO PARA SALVAR NOVA CATEGORIA
