@@ -1,9 +1,9 @@
 <?php
 
-use \Hcode\Page;
 use \Hcode\PageAdmin;
 use \Hcode\Model\User;
 use \Hcode\Model\Category;
+use \Hcode\Model\Product;
 
 //ROTA PARA CATEGORIAS
 $app->get("/admin/categories", function (){
@@ -94,6 +94,9 @@ $app->get("/admin/categories/:idcategory", function($idcategory){
 
 $app->post("/admin/categories/:idcategory", function($idcategory){
 
+    //verifica se esta logado
+    User::verifyLogin();
+
     //instancia nova categoria
     $category = new Category();
 
@@ -110,8 +113,14 @@ $app->post("/admin/categories/:idcategory", function($idcategory){
     exit;
 });
 
-//ROTA PARA CATEGORIAS SITE
-$app->get("/categories/:idcategory", function ($idcategory){
+
+
+
+//ROTA PARA CATEGORIA PRODUTOS RELACONADOS
+$app->get("/admin/categories/:idcategory/products", function($idcategory){
+
+    //verifica se esta logado
+    User::verifyLogin();
 
     //instancia nova categoria
     $category = new Category();
@@ -120,14 +129,57 @@ $app->get("/categories/:idcategory", function ($idcategory){
     $category->get((int)$idcategory);
 
     //instancia nova pagina
-    $page = new Page();
+    $page = new PageAdmin();
 
     //tpl para nova categoria
-    $page->setTpl("category", [
+    $page->setTpl("categories-products", [
         'category'=>$category->getValues(),
-        'products'=>[]
+        'productsRelated'=>$category->getProducts(),
+        'productsNotRelated'=>$category->getProducts(false)
     ]);
 });
 
+//ROTA PARA ADICIONAR PRODUTOS RELACONADOS
+$app->get("/admin/categories/:idcategory/products/:idproduct/add", function($idcategory, $idproduct){
+
+    //verifica se esta logado
+    User::verifyLogin();
+
+    //instancia nova categoria
+    $category = new Category();
+
+    //recebe o que vem do get convertendo para int
+    $category->get((int)$idcategory);
+
+    $product = new Product();
+    $product->get((int)$idproduct);
+
+    $category->addProduct($product);
+
+    header("Location: /admin/categories/" . $idcategory . "/products");
+    exit;
+});
+
+
+//ROTA PARA REMOVER PRODUTOS RELACONADOS
+$app->get("/admin/categories/:idcategory/products/:idproduct/remove", function($idcategory, $idproduct){
+
+    //verifica se esta logado
+    User::verifyLogin();
+
+    //instancia nova categoria
+    $category = new Category();
+
+    //recebe o que vem do get convertendo para int
+    $category->get((int)$idcategory);
+
+    $product = new Product();
+    $product->get((int)$idproduct);
+
+    $category->removeProduct($product);
+
+    header("Location: /admin/categories/" . $idcategory . "/products");
+    exit;
+});
 
 ?>
