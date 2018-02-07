@@ -69,8 +69,77 @@ $app->get("/cart", function (){
 
     $cart = Cart::getFromSession();
     $page = new Page();
-    $page->setTpl("cart");
+    $page->setTpl("cart", [
+        'cart'=>$cart->getValues(),
+        'products'=>$cart->getProducts()
+    ]);
 });
+
+
+
+//ROTA ADD PRODUTOS CARRINHO
+$app->get("/cart/:idproduct/add", function ($idproduct){
+
+    $product = new Product();
+    $product->get((int)$idproduct);
+
+    //recupera a sessão do carrinho
+    $cart = Cart::getFromSession();
+
+    //qtde de produtos no detalhes
+    $qtd = (isset($_GET['qtd'])) ? (int)$_GET['qtd'] : 1;
+
+    for ($i = 0; $i < $qtd; $i++){
+        //add produto no carrinho
+        $cart->addProduct($product);
+    }
+
+
+    header("Location:/cart");
+    exit;
+});
+
+
+
+
+//ROTA REMOVER (UM) PRODUTO CARRINHO
+$app->get("/cart/:idproduct/minus", function ($idproduct){
+
+    $product = new Product();
+    $product->get((int)$idproduct);
+
+    //recupera a sessão do carrinho
+    $cart = Cart::getFromSession();
+
+    //remove um produto no carrinho
+    $cart->removeProduct($product);
+
+    header("Location:/cart");
+    exit;
+});
+
+
+
+//ROTA REMOVER (TODOS) PRODUTOS CARRINHO
+$app->get("/cart/:idproduct/remove", function ($idproduct){
+
+    $product = new Product();
+    $product->get((int)$idproduct);
+
+    //recupera a sessão do carrinho
+    $cart = Cart::getFromSession();
+
+    //remove todos os produtos no carrinho
+    $cart->removeProduct($product, true);
+
+    header("Location:/cart");
+    exit;
+});
+
+
+
+
+
 
 
 ?>
