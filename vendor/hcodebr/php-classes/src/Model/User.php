@@ -10,19 +10,52 @@ use \Hcode\Model;
 class User extends Model {
 
     const SESSION = "User";
-
     const SECRET = "HcodePhp_Secret";
 
     protected $fields = [
         "iduser", "idperson", "deslogin", "despassword", "inadmin", "dtergister"
     ];
 
+    //METODO PARA PEGAR A SESSÃO DO USUARIO
+    public static function getFromSession()
+    {
+        $user = new User();
+
+        //verifica se a sessão esta definida e se é maior que 0
+        if(isset($_SESSION[User::SESSION]) && (int)$_SESSION[User::SESSION]['iduser'] > 0){
+
+            //cria um novo usuario nessa sessão
+            $user->setData($_SESSION[User::SESSION]);
+        }
+
+        return $user;
+    }
+
+    //METODO PARA CHECAR SE O USUARIO ESTA LOGADO
+    public static function checkLogin($inadmin = true)
+    {
+        if(
+            !isset($_SESSION[User::SESSION])
+            || !$_SESSION[User::SESSION]
+            || !(int)$_SESSION[User::SESSION]["iduser"] > 0
+        ){
+            //não esta logado
+            return false;
+        }else{
+            //esta logado
+            //caso esteja tentando acessar o admin, verifica se é admin
+            if($inadmin === true && (bool)$_SESSION[User::SESSION]["inadmin"] === true){
+                return true;
+            }else if($inadmin === false){
+                return true;
+            }else{
+                return false;
+            }
+        }
+    }
+
     public static function login($login, $password):User
     {
-
-
-
-
         //buscar o rach no BD e validar
         $sql = new Sql();
 
@@ -55,15 +88,10 @@ class User extends Model {
     //metodo verifica se login foi feito
     public static function verifyLogin($inadmin = true){
 
-        if(
-            !isset($_SESSION[User::SESSION])
-            || !$_SESSION[User::SESSION]
-            || !(int)$_SESSION[User::SESSION]["iduser"] > 0
-            || (bool)$_SESSION[User::SESSION]["inadmin"] !== $inadmin)
-        {
+        if(User::checkLogin($inadmin)){
 
-                header("Location: /admin/login");
-
+            header("Location: /admin/login");
+            exit;
         }
     }
 

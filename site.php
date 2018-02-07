@@ -3,6 +3,7 @@
 use Hcode\Model\Category;
 use \Hcode\Page;
 use \Hcode\Model\Product;
+use \Hcode\Model\Cart;
 
 //quando chamar o meu site sem nenhuma rota, executa esse bloco
 $app->get('/', function() {
@@ -61,7 +62,15 @@ $app->get("/products/:desurl", function($desurl){
         'product'=>$product->getValues(),
         'categories'=>$product->getCategories()
     ]);
-})
+});
+
+//ROTA CARRINHO DE COMPRAR
+$app->get("/cart", function (){
+
+    $cart = Cart::getFromSession();
+    $page = new Page();
+    $page->setTpl("cart");
+});
 
 
 ?>
