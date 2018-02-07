@@ -144,6 +144,29 @@ class Product extends Model {
 
     }
 
+    //METODO PARA RECEBER URL - DETALHES PRODUTOS
+    public function getFromURL($desurl)
+    {
+        $sql = new Sql();
+        //LIMIT 1: retorna uma linha somente
+        $rows = $sql->select("SELECT * FROM tb_products WHERE desurl = :desurl LIMIT 1", [
+           ':desurl'=>$desurl
+        ]);
+
+        $this->setData($rows[0]);
+    }
+
+    //METODO PEGAR AS CATEGORIAS RELACIONADAS
+    public function getCategories()
+    {
+        $sql = new Sql();
+        return $sql->select("
+            SELECT * FROM tb_categories a INNER JOIN tb_productscategories b 
+            ON a.idcategory = b.idcategory WHERE b.idproduct = :idproduct", [
+           ':idproduct'=>$this->getidproduct()
+        ]);
+    }
+
 
 }
 ?>

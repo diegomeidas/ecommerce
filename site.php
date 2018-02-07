@@ -17,7 +17,7 @@ $app->get('/', function() {
 
 });
 
-//ROTA PARA CATEGORIAS SITE
+//ROTA PARA CATEGORIAS SITE / E PAGINAÇÃO
 $app->get("/categories/:idcategory", function ($idcategory){
 
     //confere pagina que esta sendo passada
@@ -50,7 +50,18 @@ $app->get("/categories/:idcategory", function ($idcategory){
     ]);
 });
 
-//ROTA PARA PAGINAÇÃO
+//ROTA DETALHES PRODUTOS
+$app->get("/products/:desurl", function($desurl){
+
+    $product = new Product();
+    $product->getFromURL($desurl);
+
+    $page = new Page();
+    $page->setTpl("product-detail",[
+        'product'=>$product->getValues(),
+        'categories'=>$product->getCategories()
+    ]);
+})
 
 
 ?>
