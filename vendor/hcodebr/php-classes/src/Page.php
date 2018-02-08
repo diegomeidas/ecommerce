@@ -10,7 +10,8 @@ class Page{
     private $defaults = [
         "header"=>true,
         "footer"=>true,
-        "data"=>[]];
+        "data"=>[]
+    ];
 
 
     //metodos
@@ -53,9 +54,7 @@ class Page{
     public function setTpl($name, $data = array(), $returnHtml = false)
     {
         $this->setData($data);
-
         return $this->tpl->draw($name, $returnHtml);
-
     }
 
     //metodo pra carregar o FOOTER
@@ -63,8 +62,6 @@ class Page{
 
     if ($this->options['footer'] === true)
         $this->tpl->draw("footer", false);
-
-
     }
 }
 
